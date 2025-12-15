@@ -10,6 +10,12 @@ CAMLprim value _initscr() {
   CAMLlocal1(window);
   window = caml_alloc(1, Abstract_tag);
   WINDOW* window_ptr = initscr();
+
+  mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
+  //https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h2-Mouse-Tracking
+  //https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Any-event-tracking
+  printf("\033[?1003h\n");
+
   if (window_ptr == NULL) caml_failwith("initscr failed");
   mouseinterval(0);
   *((WINDOW***)Data_abstract_val(window)) = malloc(sizeof(WINDOW*));
@@ -83,7 +89,6 @@ CAMLprim value _get_mouse() {
   CAMLlocal1(m_event);
   m_event = caml_alloc(3, 0);
   MEVENT m;
-  mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
   if (!has_mouse()) caml_failwith("mouse driver not initialized");
   if (getmouse(&m) == ERR) CAMLreturn(Val_none);
   Store_field(m_event, 0, Val_int(m.x));
