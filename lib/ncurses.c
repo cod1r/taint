@@ -11,9 +11,30 @@ CAMLprim value _initscr() {
   window = caml_alloc(1, Abstract_tag);
   WINDOW* window_ptr = initscr();
   if (window_ptr == NULL) caml_failwith("initscr failed");
+  mouseinterval(0);
   *((WINDOW***)Data_abstract_val(window)) = malloc(sizeof(WINDOW*));
   memcpy(*((WINDOW***)Data_abstract_val(window)), &window_ptr, sizeof(WINDOW*));
   CAMLreturn(window);
+}
+CAMLprim value _intrflush() {
+  CAMLparam0();
+  if (intrflush(stdscr, FALSE) == ERR) caml_failwith("intrflush failed");
+  CAMLreturn(Val_unit);
+}
+CAMLprim value _keypad() {
+  CAMLparam0();
+  if (keypad(stdscr, TRUE) == ERR) caml_failwith("keypad failed");
+  CAMLreturn(Val_unit);
+}
+CAMLprim value _nodelay() {
+  CAMLparam0();
+  if (nodelay(stdscr, TRUE) == ERR) caml_failwith("nodelay failed");
+  CAMLreturn(Val_unit);
+}
+CAMLprim value _notimeout() {
+  CAMLparam0();
+  if (notimeout(stdscr, TRUE) == ERR) caml_failwith("notimeout failed");
+  CAMLreturn(Val_unit);
 }
 CAMLprim value _cbreak() {
   CAMLparam0();
@@ -35,16 +56,26 @@ CAMLprim value _refresh() {
   if (refresh() == ERR) caml_failwith("refresh failed");
   CAMLreturn(Val_unit);
 }
+CAMLprim value _doupdate() {
+  CAMLparam0();
+  if (doupdate() == ERR) caml_failwith("doupdate failed");
+  CAMLreturn(Val_unit);
+}
 CAMLprim value _endwin() {
   CAMLparam0();
   if (endwin() == ERR) caml_failwith("endwin failed");
   CAMLreturn(Val_unit);
 }
-CAMLprim value _move(value x, value y) {
+CAMLprim value _move(value y, value x) {
   CAMLparam2(x, y);
   int _x = Int_val(x);
   int _y = Int_val(y);
   if (move(_y, _x) == ERR) caml_failwith("move failed");
+  CAMLreturn(Val_unit);
+}
+CAMLprim value _getch() {
+  CAMLparam0();
+  getch();
   CAMLreturn(Val_unit);
 }
 CAMLprim value _get_mouse() {
@@ -52,11 +83,12 @@ CAMLprim value _get_mouse() {
   CAMLlocal1(m_event);
   m_event = caml_alloc(3, 0);
   MEVENT m;
-  mousemask(BUTTON1_PRESSED | BUTTON1_RELEASED, NULL);
+  mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
   if (!has_mouse()) caml_failwith("mouse driver not initialized");
   if (getmouse(&m) == ERR) CAMLreturn(Val_none);
   Store_field(m_event, 0, Val_int(m.x));
   Store_field(m_event, 1, Val_int(m.y));
   Store_field(m_event, 2, Val_long(m.bstate));
   CAMLreturn(caml_alloc_some(m_event));
+  CAMLreturn(Val_none);
 }
