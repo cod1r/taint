@@ -1,0 +1,6 @@
+# dune init project taint
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /Users/cod1r/.cache/dune/db
+# Workspace root: /Users/cod1r/workspace/repositories/taint
+# Auto-detected concurrency: 8
