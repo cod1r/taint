@@ -12,7 +12,7 @@ jobs:
 
         - name: Get Opam
           run: |
-            sudo sh <(curl -fsSL https://opam.ocaml.org/install.sh)
+            sudo bash -c "sh <(curl -fsSL https://opam.ocaml.org/install.sh)"
             opam init
             eval $(opam env)
 
