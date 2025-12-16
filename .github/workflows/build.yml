@@ -4,12 +4,15 @@ jobs:
   build-job:
     name: Build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x86_64, arm64]
     steps:
         - uses: actions/checkout@v5
 
         - name: Get Opam
           run: |
-            sudo apt install opam
+            sudo sh <(curl -fsSL https://opam.ocaml.org/install.sh)
             opam init
             eval $(opam env)
 
