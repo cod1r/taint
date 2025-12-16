@@ -12,7 +12,7 @@ jobs:
             eval $(opam env)
 
         - name: Get Dune
-          run:
+          run: |
             opam install dune
             eval $(opam env)
 
