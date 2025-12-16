@@ -5,6 +5,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+        - uses: actions/checkout@v5
+
         - name: Get Opam
           run: |
             sudo apt install opam
