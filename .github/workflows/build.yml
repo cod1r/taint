@@ -14,6 +14,7 @@ jobs:
         - name: Get Dune
           run:
             opam install dune
+            eval $(opam env)
 
         - name: build
           run:
