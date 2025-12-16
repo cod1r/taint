@@ -16,6 +16,7 @@ type taint_state = {
   holding_button1 : bool;
   key : int option;
   cursor_pos : int * int;
+  last_drawn_coord : int * int;
 }
 
 let rec loop state =
@@ -55,11 +56,21 @@ let rec loop state =
         | None -> state.key);
     }
   in
-  begin match state.key with
-  | Some key when state.holding_button1 -> Ncurses._printw key
-  | _ -> ()
-  end;
+  let state =
+    match state.key with
+    | Some key when state.holding_button1 && (y, x) <> state.last_drawn_coord ->
+        Ncurses._printw key;
+        { state with last_drawn_coord = (y, x) }
+    | _ -> state
+  in
   Ncurses._doupdate ();
   loop state
 
-let () = loop { holding_button1 = false; key = None; cursor_pos = (0, 0) }
+let () =
+  loop
+    {
+      holding_button1 = false;
+      key = None;
+      cursor_pos = (0, 0);
+      last_drawn_coord = (-1, -1);
+    }
