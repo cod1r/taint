@@ -10,11 +10,10 @@ jobs:
     steps:
         - uses: actions/checkout@v5
 
-        - name: Get Opam
-          run: |
-            yes | sudo bash -c "sh <(curl -fsSL https://opam.ocaml.org/install.sh)"
-            opam init
-            eval $(opam env)
+        - name: Set-up OCaml
+          uses: ocaml/setup-ocaml@v3
+          with:
+            ocaml-compiler: 5
 
         - name: Get Dune
           run:
