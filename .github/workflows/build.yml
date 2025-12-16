@@ -12,12 +12,12 @@ jobs:
             eval $(opam env)
 
         - name: Get Dune
-          run: |
+          run:
             opam install dune
-            eval $(opam env)
 
         - name: build
-          run:
+          run: |
+            eval $(opam env)
             dune build
 
         - name: Upload artifact
