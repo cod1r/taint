@@ -5,6 +5,13 @@
 #include <caml/fail.h>
 #include <string.h>
 
+CAMLprim value _shutdown() {
+  CAMLparam0();
+  endwin();
+  printf("\033[?1003l\n");
+  CAMLreturn(Val_unit);
+}
+
 CAMLprim value has_button_state(value button_state, value mmask) {
   CAMLparam2(button_state, mmask);
   mmask_t unwrapped_mask = Int_val(mmask);
@@ -17,6 +24,11 @@ CAMLprim value has_button_state(value button_state, value mmask) {
   CAMLreturn(Val_unit);
 }
 
+CAMLprim value _raw() {
+  CAMLparam0();
+  if (raw() == ERR) caml_failwith("raw failed");
+  CAMLreturn(Val_unit);
+}
 CAMLprim value _initscr() {
   CAMLparam0();
   CAMLlocal1(window);

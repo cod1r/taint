@@ -1,8 +1,7 @@
 open Taint
 
-let () = at_exit (fun _ -> Ncurses._endwin ())
 let _window = Ncurses._initscr ()
-let () = Ncurses._cbreak ()
+let () = Ncurses._raw ()
 let () = Ncurses._noecho ()
 let () = Ncurses._clear ()
 let () = Ncurses._keypad ()
@@ -46,7 +45,14 @@ let rec loop state =
   let state =
     {
       state with
-      key = (match key with Some key -> Some key | None -> state.key);
+      key =
+        (match key with
+        | Some key ->
+            if key = 3 then (
+              Ncurses._shutdown ();
+              exit 0);
+            Some key
+        | None -> state.key);
     }
   in
   begin match state.key with

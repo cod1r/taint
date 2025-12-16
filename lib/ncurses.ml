@@ -16,6 +16,8 @@ external _nodelay : unit -> unit = "_nodelay" "_nodelay"
 external _notimeout : unit -> unit = "_notimeout" "_notimeout"
 external _doupdate : unit -> unit = "_doupdate" "_doupdate"
 external _printw : int -> unit = "_printw" "_printw"
+external _raw : unit -> unit = "_raw" "_raw"
+external _shutdown : unit -> unit = "_shutdown" "_shutdown"
 
 type button_states = Button1Pressed | Button1Released
 
