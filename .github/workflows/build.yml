@@ -7,7 +7,7 @@ jobs:
     steps:
         - name: Get Opam
           run: |
-            apt install opam
+            sudo apt install opam
             opam init
             eval $(opam env)
 
