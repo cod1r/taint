@@ -5,6 +5,18 @@
 #include <caml/fail.h>
 #include <string.h>
 
+CAMLprim value has_button_state(value button_state, value mmask) {
+  CAMLparam2(button_state, mmask);
+  mmask_t unwrapped_mask = Int_val(mmask);
+  int int_rep_button_state = Int_val(button_state);
+  switch (int_rep_button_state) {
+    case 0: CAMLreturn(Val_bool(BUTTON1_PRESSED & unwrapped_mask));
+    case 1: CAMLreturn(Val_bool(BUTTON1_RELEASED & unwrapped_mask));
+    default: caml_failwith("IMPOSSIBLE");
+  }
+  CAMLreturn(Val_unit);
+}
+
 CAMLprim value _initscr() {
   CAMLparam0();
   CAMLlocal1(window);
@@ -81,8 +93,9 @@ CAMLprim value _move(value y, value x) {
 }
 CAMLprim value _getch() {
   CAMLparam0();
-  getch();
-  CAMLreturn(Val_unit);
+  int key = getch();
+  if (key == ERR || key == KEY_MOUSE) CAMLreturn(Val_none);
+  CAMLreturn(caml_alloc_some(Val_int(key)));
 }
 CAMLprim value _get_mouse() {
   CAMLparam0();
@@ -96,4 +109,10 @@ CAMLprim value _get_mouse() {
   Store_field(m_event, 2, Val_long(m.bstate));
   CAMLreturn(caml_alloc_some(m_event));
   CAMLreturn(Val_none);
+}
+CAMLprim value _printw(value vchar) {
+  CAMLparam1(vchar);
+  int c = Int_val(vchar);
+  if (printw("%c", c) == ERR) caml_failwith("printw failed");
+  CAMLreturn(Val_unit);
 }
